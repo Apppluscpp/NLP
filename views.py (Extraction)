@@ -1,6 +1,5 @@
-# views.py
-from flask import Blueprint, render_template, request, send_file
-import fitz  # PyMuPDF library for PDF processing
+from flask import Blueprint, render_template, request, redirect, url_for
+import fitz
 from pdfminer.high_level import extract_text
 import os
 from io import BytesIO
@@ -24,10 +23,14 @@ def upload_and_process():
         # Save the text content to a text file
         save_to_text_file(text_content)
 
-        # Provide feedback to the user
-        return render_template("result.html", text_content=text_content)
+        # Redirect to a new route to display the result without showing the text
+        return redirect(url_for("views.display_result"))
 
     return "Unsupported file format. Please upload a PDF file."
+
+@views.route("/display_result")
+def display_result():
+    return render_template("result.html")
 
 def extract_text_from_file_storage(file_storage):
     content_bytes = file_storage.read()
@@ -56,7 +59,3 @@ def extract_text_from_pdf(pdf_file):
 def save_to_text_file(text_content):
     with open("converted_text.txt", "w", encoding="utf-8") as text_file:
         text_file.write(text_content)
-
-@views.route("/download_text_file")
-def download_text_file():
-    return send_file("converted_text.txt", as_attachment=True)
