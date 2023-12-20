@@ -1,0 +1,46 @@
+# views.py
+from flask import Blueprint, render_template, request, send_file
+import fitz  # PyMuPDF library for PDF processing
+
+views = Blueprint("views", __name__)
+
+@views.route("/process_pdf", methods=["POST"])
+def process_pdf():
+    if "pdf_file" not in request.files:
+        return "No file part"
+
+    pdf_file = request.files["pdf_file"]
+
+    if pdf_file.filename == "":
+        return "No selected file"
+
+    # Check if the file is a PDF
+    if pdf_file.filename.endswith(".pdf"):
+        text_content = convert_pdf_to_text(pdf_file)
+
+        # Save the text content to a text file
+        save_to_text_file(text_content)
+
+        # Provide feedback to the user
+        return render_template("result.html", text_content=text_content)
+
+    return "Unsupported file format. Please upload a PDF file."
+
+def convert_pdf_to_text(pdf_file):
+    doc = fitz.open(pdf_file)
+    text = ""
+
+    for page_number in range(doc.page_count):
+        page = doc[page_number]
+        text += page.get_text()
+
+    doc.close()
+    return text
+
+def save_to_text_file(text_content):
+    with open("converted_text.txt", "w", encoding="utf-8") as text_file:
+        text_file.write(text_content)
+
+@views.route("/download_text_file")
+def download_text_file():
+    return send_file("converted_text.txt", as_attachment=True)
