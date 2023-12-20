@@ -1,8 +1,14 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 import fitz
 from pdfminer.high_level import extract_text
 import os
 from io import BytesIO
+
+# Import OpenAI library
+import openai
+
+# Set your OpenAI API key
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
@@ -23,14 +29,42 @@ def upload_and_process():
         # Save the text content to a text file
         save_to_text_file(text_content)
 
-        # Redirect to a new route to display the result without showing the text
+        # Store the text content in a session variable
+        session["pdf_text"] = text_content
+
+        # Redirect to a new route to display the result with the chatbox
         return redirect(url_for("views.display_result"))
 
     return "Unsupported file format. Please upload a PDF file."
 
+
 @views.route("/display_result")
 def display_result():
-    return render_template("result.html")
+    # Retrieve the stored PDF text from the session
+    pdf_text = session.get("pdf_text", "")
+
+    return render_template("result.html", pdf_text=pdf_text)
+
+
+@views.route("/get_openai_response", methods=["POST"])
+def get_openai_response():
+    user_input = request.form.get("user_input")
+    
+    # Retrieve the stored PDF text from the session
+    pdf_text = session.get("pdf_text", "")
+
+    # Concatenate user input with the PDF text for OpenAI prompt
+    prompt = f"{user_input} in a PDF document:\n{pdf_text}"
+
+    # Call the OpenAI API for generating a response
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=150
+    )
+
+    return jsonify({"response": response.choices[0].text.strip()})
+
 
 def extract_text_from_file_storage(file_storage):
     content_bytes = file_storage.read()
