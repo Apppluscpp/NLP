@@ -1,70 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style.css">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
 </head>
+
 <body>
-
-
     <div class="text-box">
         <h1>ChatBot</h1>
         <p>Upload your file to start!</p>
-        <input type="file" id="fileInput" style="display:none;">
-        <label for="fileInput" class="hero-btn">Upload File</label>
-        <p id="fileNameDisplay"></p>
-        <button id="processFileBtn" style="display:none;" class="hero-btn" onclick="processFile()">Process File</button>
+        
+        <!-- Form for file upload -->
+        <form action="{{ url_for('views.upload_and_process') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="pdf_file" accept=".pdf" id="fileInput" style="display:none;">
+            <label for="fileInput" class="hero-btn">Choose File</label>
+            <p id="fileNameDisplay"></p>
+            
+            <!-- Single button for file submission -->
+            <button type="submit" class="hero-btn">Submit File</button>
+        </form>
     </div>
-    
+
     <script>
         document.getElementById("fileInput").addEventListener("change", handleFileUpload);
-    
+
         function handleFileUpload(event) {
             const fileInput = event.target;
             const file = fileInput.files[0];
             const fileNameDisplay = document.getElementById("fileNameDisplay");
-            const processFileBtn = document.getElementById("processFileBtn");
-    
+
             if (file) {
                 // Display the file name
                 fileNameDisplay.textContent = "File uploaded: " + file.name;
-    
-                // Show the "Process File" button
-                processFileBtn.style.display = "inline";
             } else {
                 // Clear the file name display if no file is selected
                 fileNameDisplay.textContent = "";
-    
-                // Hide the "Process File" button
-                processFileBtn.style.display = "none";
-            }
-        }
-    
-        // function processFile() {
-        //     // Redirect to the home page using Flask's url_for
-        //     window.location.href = "{{ url_for('views.chat') }}";
-        // }
-    </script>
-    </section>
-
-    <script>
-        function uploadFile() {
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
-
-            if (file) {
-                // You can add your file upload logic here
-                console.log('File selected:', file.name);
-            } else {
-                alert('Please select a file to upload.');
             }
         }
     </script>
-
-
-
 </body>
+
 </html>
