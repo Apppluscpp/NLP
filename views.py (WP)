@@ -1,11 +1,19 @@
-# views.py
-from flask import Blueprint, render_template, request, send_file
-import fitz  # PyMuPDF library for PDF processing
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+import fitz
+from pdfminer.high_level import extract_text
+import os
+from io import BytesIO
+
+# Import OpenAI library
+import openai
+
+# Set your OpenAI API key
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
-@views.route("/process_pdf", methods=["POST"])
-def process_pdf():
+@views.route("/upload_and_process", methods=["POST"])
+def upload_and_process():
     if "pdf_file" not in request.files:
         return "No file part"
 
@@ -16,31 +24,57 @@ def process_pdf():
 
     # Check if the file is a PDF
     if pdf_file.filename.endswith(".pdf"):
-        text_content = convert_pdf_to_text(pdf_file)
+        text_content = extract_text_from_pdf(pdf_file)
 
         # Save the text content to a text file
         save_to_text_file(text_content)
 
-        # Provide feedback to the user
-        return render_template("result.html", text_content=text_content)
+        # Redirect to a new route to display the result with the chatbox
+        return redirect(url_for("views.display_result"))
 
     return "Unsupported file format. Please upload a PDF file."
 
-def convert_pdf_to_text(pdf_file):
-    doc = fitz.open(pdf_file)
-    text = ""
+@views.route("/display_result")
+def display_result():
+    return render_template("result.html")
 
+@views.route("/get_openai_response", methods=["POST"])
+def get_openai_response():
+    user_input = request.form.get("user_input")
+
+    # Call the OpenAI API for generating a response
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=user_input,
+        max_tokens=150
+    )
+
+    return jsonify({"response": response.choices[0].text.strip()})
+
+def extract_text_from_file_storage(file_storage):
+    content_bytes = file_storage.read()
+    content_stream = BytesIO(content_bytes)
+    return extract_text(content_stream)
+
+def extract_text_from_pdf(pdf_file):
+    text_content = ""
+
+    # Extract the filename without the extension
+    filename_without_extension = os.path.splitext(pdf_file.filename)[0]
+
+    # Extract text using PyMuPDF
+    doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
     for page_number in range(doc.page_count):
         page = doc[page_number]
-        text += page.get_text()
-
+        text_content += page.get_text()
     doc.close()
-    return text
+
+    # Extract text using pdfminer
+    pdf_file.seek(0)  # Reset file pointer
+    text_content += extract_text_from_file_storage(pdf_file)
+
+    return text_content
 
 def save_to_text_file(text_content):
     with open("converted_text.txt", "w", encoding="utf-8") as text_file:
         text_file.write(text_content)
-
-@views.route("/download_text_file")
-def download_text_file():
-    return send_file("converted_text.txt", as_attachment=True)
