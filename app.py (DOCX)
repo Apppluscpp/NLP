@@ -1,14 +1,12 @@
 from flask import Flask, render_template
 from views import views
-import os  # Import the os module
+import os
 
 app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/views")
 
-# Set the secret key
 app.secret_key = "123"
 
-# Create the "uploads" directory if it doesn't exist
 if not os.path.exists("uploads"):
     os.makedirs("uploads")
 
