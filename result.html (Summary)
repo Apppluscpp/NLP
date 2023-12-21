@@ -13,6 +13,10 @@
         <h1>Conversion Result</h1>
         <p>The PDF file has been successfully processed!</p>
 
+        <div class="summary">
+            <p>{{ summary }}</p>
+        </div>
+
         <!-- Chatbox -->
         <div class="chat-container">
             <div class="chat-header">
@@ -36,11 +40,11 @@
             messageDiv.textContent = message;
             chatMessages.appendChild(messageDiv);
         }
-
+        
         function sendMessage() {
             var userInput = document.getElementById("user-input").value;
             appendMessage("sent", userInput);
-
+        
             // Send user input to the server to get OpenAI response
             fetch("{{ url_for('views.get_openai_response') }}", {
                 method: "POST",
@@ -53,7 +57,7 @@
             .then(data => {
                 var aiResponse = data.response;
                 appendMessage("received", aiResponse);
-
+        
                 // Clear the input field after receiving the response
                 document.getElementById("user-input").value = "";
             })
@@ -61,7 +65,8 @@
                 console.error("Error fetching OpenAI response:", error);
             });
         }
-    </script>
+        </script>
+        
 
 </body>
 
