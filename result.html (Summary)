@@ -11,7 +11,7 @@
 <body>
     <div class="text-box">
         <h1>Conversion Result</h1>
-        <p>The PDF file has been successfully processed!</p>
+        <p>Here is a summary of the submitted document</p>
 
         <div class="summary">
             <p>{{ summary }}</p>
