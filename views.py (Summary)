@@ -3,28 +3,29 @@ import fitz
 from pdfminer.high_level import extract_text
 import os
 from io import BytesIO
+from docx import Document
 
 # Import OpenAI library
 import openai
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
 @views.route("/upload_and_process", methods=["POST"])
 def upload_and_process():
-    if "pdf_file" not in request.files:
+    if "file" not in request.files:
         return "No file part"
 
-    pdf_file = request.files["pdf_file"]
+    uploaded_file = request.files["file"]
 
-    if pdf_file.filename == "":
+    if uploaded_file.filename == "":
         return "No selected file"
 
-    # Check if the file is a PDF
-    if pdf_file.filename.endswith(".pdf"):
-        text_content = extract_text_from_pdf(pdf_file)
+    # Check if the file is a PDF or DOCX
+    if uploaded_file.filename.endswith((".pdf", ".docx")):
+        text_content = extract_text_from_file(uploaded_file)
 
         # Send the text to OpenAI for summarization
         summary = generate_summary(text_content)
@@ -36,7 +37,7 @@ def upload_and_process():
         # Redirect to a new route to display the result with the chatbox
         return redirect(url_for("views.display_result"))
 
-    return "Unsupported file format. Please upload a PDF file."
+    return "Unsupported file format. Please upload a PDF or DOCX file."
 
 @views.route("/display_result")
 def display_result():
@@ -47,19 +48,25 @@ def display_result():
     return render_template("result.html", pdf_text=pdf_text, summary=summary)
 
 
-def generate_summary(text_content):
+def generate_summary(text_content, max_tokens=500):
     # Ask OpenAI to summarize the content
     prompt = f"Please summarize the following content:\n{text_content}"
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=prompt,
-        max_tokens=150
+        max_tokens=max_tokens
     )
-    
+
     # Extract the generated summary from the OpenAI response
     summary = response.choices[0].text.strip()
-    
+
+    # Remove leading "." if present
+    if summary.startswith("."):
+        summary = summary[1:]
+
     return summary
+
+
 
 @views.route("/document_summary")
 def document_summary():
@@ -125,3 +132,19 @@ def extract_text_from_file_storage(file_storage):
 def save_to_text_file(text_content):
     with open("converted_text.txt", "w", encoding="utf-8") as text_file:
         text_file.write(text_content)
+
+def extract_text_from_file(uploaded_file):
+    text_content = ""
+
+    if uploaded_file.filename.endswith(".pdf"):
+        doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+        for page_number in range(doc.page_count):
+            page = doc[page_number]
+            text_content += page.get_text()
+        doc.close()
+    elif uploaded_file.filename.endswith(".docx"):
+        doc = Document(uploaded_file)
+        for paragraph in doc.paragraphs:
+            text_content += paragraph.text
+
+    return text_content
