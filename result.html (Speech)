@@ -91,18 +91,20 @@
             }
         });        
 
-        function appendMessage(type, message) {
+        function appendMessage(type, message, responseTime) {
             var chatMessages = document.getElementById("chat-messages");
             var messageDiv = document.createElement("div");
             messageDiv.className = "message " + type;
-            messageDiv.textContent = message;
+            messageDiv.textContent = message + (responseTime ? ` (Response Time: ${responseTime.toFixed(2)}s)` : '');
             chatMessages.appendChild(messageDiv);
         }
-
+    
         function sendMessage() {
             var userInput = document.getElementById("user-input").value;
-            appendMessage("sent", userInput);
-
+            var startTime = new Date().getTime();
+    
+            appendMessage("sent", userInput, 0); // Display sent message immediately
+    
             // Send user input to the server to get OpenAI response
             fetch("{{ url_for('views.get_openai_response') }}", {
                 method: "POST",
@@ -111,18 +113,23 @@
                 },
                 body: "user_input=" + encodeURIComponent(userInput),
             })
-                .then(response => response.json())
-                .then(data => {
-                    var aiResponse = data.response;
-                    appendMessage("received", aiResponse);
-
-                    // Clear the input field after receiving the response
-                    document.getElementById("user-input").value = "";
-                })
-                .catch(error => {
-                    console.error("Error fetching OpenAI response:", error);
-                });
+            .then(response => response.json())
+            .then(data => {
+                var aiResponse = data.response;
+                var endTime = new Date().getTime();
+                var responseTime = (endTime - startTime) / 1000; // Convert to seconds
+    
+                appendMessage("received", aiResponse, responseTime);
+    
+                // Clear the input field after receiving the response
+                document.getElementById("user-input").value = "";
+            })
+            .catch(error => {
+                console.error("Error fetching OpenAI response:", error);
+            });
         }
+
+        
 
         function populateQuestion(question) {
             document.getElementById("user-input").value = question;
