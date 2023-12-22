@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+
+<body>
+    <div class="text-box">
+        <h1>ChatBot</h1>
+        <p>Upload your file to start!</p>
+
+        <!-- Form for file upload -->
+        <form onsubmit="return validateForm()" action="{{ url_for('views.upload_and_process') }}" method="post"
+            enctype="multipart/form-data">
+            <input type="file" name="file" accept=".pdf, .docx" id="fileInput" style="display:none;">
+            <label for="fileInput" class="hero-btn">Choose File</label>
+            <p id="fileNameDisplay"></p>
+
+            <!-- Single button for file submission -->
+            <button type="submit" class="hero-btn">Submit File</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("fileInput").addEventListener("change", handleFileUpload);
+
+        function handleFileUpload(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const fileNameDisplay = document.getElementById("fileNameDisplay");
+
+            if (file) {
+                // Display the file name
+                fileNameDisplay.textContent = "File uploaded: " + file.name;
+            } else {
+                // Clear the file name display if no file is selected
+                fileNameDisplay.textContent = "";
+            }
+        }
+
+        function validateForm() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                // Display an alert if no file is selected
+                alert("Please choose a file before submitting.");
+                return false; // Prevent form submission
+            }
+
+            // Continue with form submission if a file is selected
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>
