@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../static/style.css">
     <title>Conversion Result</title>
+    
+    <style>
+        /* Additional styles for potential questions */
+        .potential-questions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            margin-left: -75%; /* Adjusted margin-left to move 25% to the left */
+        }
+    
+        .potential-question {
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #007BFF;
+            text-decoration: underline;
+        }
+    </style>
+    
+
 </head>
 
 <body>
@@ -34,28 +54,34 @@
         <div id="result"></div>
         <button id="startButton">Start Listening</button>
     </div>
+    <div class="potential-questions">
+        <div class="potential-question" onclick="populateQuestion('What is the main idea of the document?')">What is the main idea?</div>
+        <div class="potential-question" onclick="populateQuestion('Can you summarize the key points of the document?')">Summarize key points</div>
+        <div class="potential-question" onclick="populateQuestion('What are the implications discussed in the document?')">Discuss implications</div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var resultDiv = document.getElementById('result');
             var startButton = document.getElementById('startButton');
-
+        
             if ('webkitSpeechRecognition' in window) {
                 var recognition = new webkitSpeechRecognition();
                 recognition.continuous = false;
-
+        
                 recognition.onresult = function (event) {
                     var recognizedText = event.results[0][0].transcript.trim();
                     resultDiv.textContent = 'Recognized: ' + recognizedText;
-
+        
                     // Set the recognized text in the input field
                     document.getElementById("user-input").value = recognizedText;
                 };
-
+        
                 recognition.onerror = function (event) {
                     console.error('Speech recognition error:', event.error);
                 };
-
+        
                 startButton.addEventListener('click', function () {
                     recognition.start();
                     resultDiv.textContent = 'Listening...';
@@ -63,7 +89,7 @@
             } else {
                 resultDiv.textContent = 'Speech recognition not supported in this browser.';
             }
-        });
+        });        
 
         function appendMessage(type, message) {
             var chatMessages = document.getElementById("chat-messages");
@@ -97,9 +123,69 @@
                     console.error("Error fetching OpenAI response:", error);
                 });
         }
-    </script>
 
-    <!-- <a href="feedback.html" class="feedback-button">Feedback Form</a> -->
+        function populateQuestion(question) {
+            document.getElementById("user-input").value = question;
+        }
+
+        async function generatePotentialQuestions(documentContent) {
+            const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions'; // Replace with the correct API endpoint
+            const apiKey = 'YOUR_API_KEY'; // Replace with your actual OpenAI API key
+
+            const prompt = `Generate three questions based on the following document:\n\n${documentContent}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        max_tokens: 100,
+                        n: 3, // Number of questions to generate
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.choices && data.choices.length > 0) {
+                    const potentialQuestionsSection = document.getElementById("potentialQuestionsSection");
+
+                    // Clear existing potential questions
+                    potentialQuestionsSection.innerHTML = "";
+
+                    // Display dynamically generated questions
+                    data.choices.forEach((choice, index) => {
+                        const potentialQuestionElement = document.createElement("div");
+                        potentialQuestionElement.className = "potential-question";
+                        potentialQuestionElement.textContent = choice.text.trim();
+                        potentialQuestionElement.onclick = function () {
+                            populateQuestion(choice.text.trim());
+                        };
+
+                        potentialQuestionsSection.appendChild(potentialQuestionElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching data from OpenAI API:', error);
+            }
+        }
+
+        // Function to populate the question in the input box
+        function populateQuestion(question) {
+            document.getElementById("user-input").value = question;
+        }
+
+        // Example usage: Call this function with the actual document content
+        generatePotentialQuestions("This is an example document. Replace it with the actual content.");
+
+        function populateQuestion(question) {
+            document.getElementById("user-input").value = question;
+        }
+
+    </script>
 
 </body>
 
