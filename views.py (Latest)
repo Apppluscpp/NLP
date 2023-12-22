@@ -9,7 +9,7 @@ from docx import Document
 import openai
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
