@@ -15,7 +15,7 @@
         
         <!-- Form for file upload -->
         <form action="{{ url_for('views.upload_and_process') }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="pdf_file" accept=".pdf" id="fileInput" style="display:none;">
+            <input type="file" name="file" accept=".pdf, .docx" id="fileInput" style="display:none;">
             <label for="fileInput" class="hero-btn">Choose File</label>
             <p id="fileNameDisplay"></p>
             
