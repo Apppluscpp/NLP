@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
@@ -27,35 +28,48 @@
 
     <script>
         document.getElementById("fileInput").addEventListener("change", handleFileUpload);
-
+    
         function handleFileUpload(event) {
             const fileInput = event.target;
             const file = fileInput.files[0];
             const fileNameDisplay = document.getElementById("fileNameDisplay");
-
+    
             if (file) {
                 // Display the file name
                 fileNameDisplay.textContent = "File uploaded: " + file.name;
+    
+                // Check if the file size exceeds the limit
+                const maxFileSizeMB = 1.2;  
+                const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
+    
+                if (file.size > maxFileSizeBytes) {
+                    alert("File size exceeds the maximum limit of " + maxFileSizeMB + " MB.");
+                    // Reset the file input
+                    fileInput.value = "";
+                    fileNameDisplay.textContent = "";
+                }
             } else {
                 // Clear the file name display if no file is selected
                 fileNameDisplay.textContent = "";
             }
         }
-
+    
         function validateForm() {
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
-
+    
             if (!file) {
                 // Display an alert if no file is selected
                 alert("Please choose a file before submitting.");
                 return false; // Prevent form submission
             }
-
+    
             // Continue with form submission if a file is selected
             return true;
         }
     </script>
+    
+
 </body>
 
 </html>
