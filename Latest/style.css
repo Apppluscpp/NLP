@@ -41,7 +41,7 @@ button:hover {
     width:90%;
     color:#fff;
     position:absolute;
-    top:50%;
+    top:25%;
     left:48%;
     transform:translate(-50%,-50%);
     text-align:center;
