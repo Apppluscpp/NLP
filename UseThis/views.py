@@ -13,7 +13,7 @@ import pytesseract
 import openai
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
@@ -48,8 +48,14 @@ def upload_and_process():
         # Perform OCR on the image
         extracted_text = perform_ocr_on_image(uploaded_file)
 
-        # You can use the extracted_text as needed
-        return render_template("image_result.html", extracted_text=extracted_text)
+        summary = generate_summary(extracted_text)
+
+        # Store the original text and summary in session variables
+        session["pdf_text"] = extracted_text
+        session["summary"] = summary
+
+        # Redirect to a new route to display the result with the chatbox
+        return redirect(url_for("views.display_result"))
 
     return "Unsupported file format. Please upload a PDF, DOCX, or image file."
 
@@ -64,11 +70,10 @@ def perform_ocr_on_image(image_file):
 
 @views.route("/display_result")
 def display_result():
-    # Retrieve the stored original text and summary from the session
-    pdf_text = session.get("pdf_text", "")
+    # Retrieve the stored summary from the session
     summary = session.get("summary", "")
 
-    return render_template("result.html", pdf_text=pdf_text, summary=summary)
+    return render_template("result.html", summary=summary)
 
 
 def generate_summary(text_content, max_tokens=500):
