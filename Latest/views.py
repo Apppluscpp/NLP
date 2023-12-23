@@ -4,14 +4,19 @@ from pdfminer.high_level import extract_text
 import os
 from io import BytesIO
 from docx import Document
-
+from flask_mail import Message
+from flask import current_app
+from flask_mail import Mail
+1111
 # Import OpenAI library
 import openai
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
+
+mail = Mail()
 
 @views.route("/upload_and_process", methods=["POST"])
 def upload_and_process():
@@ -148,3 +153,38 @@ def extract_text_from_file(uploaded_file):
             text_content += paragraph.text
 
     return text_content
+
+@views.route("/contact_us", methods=["GET", "POST"])
+def contact_us():
+    email_sent = False
+
+    if request.method == "POST":
+        # Process the form data and send email (you need to implement this)
+        # Retrieve form data
+        name = request.form.get("name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        feedback = request.form.get("feedback")
+
+        # Send email (you need to implement this)
+        send_email(name, email, phone, feedback)
+
+        # Set the flag to True if the email is sent successfully
+        email_sent = True
+
+    return render_template("contact_us.html", email_sent=email_sent)   
+
+def send_email(name, email, phone, feedback):
+    # Create a Message object
+    subject = 'New Feedback'
+    body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nFeedback: {feedback}"
+    recipients = ['ykpang-wp21@student.tarc.edu.my']
+
+    message = Message(subject=subject, body=body, recipients=recipients)
+
+    try:
+        # Send the message using the 'mail' object
+        mail.send(message)
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Error sending email: {e}")
