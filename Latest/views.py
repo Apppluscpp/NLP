@@ -12,7 +12,7 @@ from flask_mail import Mail
 import openai
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 views = Blueprint("views", __name__)
 
