@@ -1,0 +1,269 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 0;
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    background-image: url(/static/banner7jpg.jpg);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+form {
+    margin-top: 20px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.text-box{
+    font-family: Georgia, serif;
+    width:90%;
+    color:#fff;
+    position:absolute;
+    top:25%;
+    left:48%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}
+
+.text-box h1{
+    font-size:120px;
+    padding-top: 20%;
+}
+
+.text-box p {
+    margin:10px 0 40px;
+    font-size:14px;
+    color:rgb(255, 255, 255);
+}
+
+.hero-btn{
+    display : inline-block;
+    text-decoration:none;
+    color:#fff;
+    border:1px solid #fff;
+    padding:12px 34px;
+    font-size:13px;
+    background:transparent;
+    position:relative;
+    cursor:crosshair;
+}
+.hero-btn:hover{
+    border:1px solid rgb(255, 255, 255);
+    background:blue;
+    transition:1s;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 400px;
+    background-color: rgba(51, 51, 51, 0.5);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    white-space: nowrap;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+
+/* Styles for the fake progress bar */
+#progress-bar-container {
+    width: 8%;
+    height: 20px;
+    background-color: #ddd;
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #4caf50;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.1s;  /* You can adjust the duration of the animation */
+}
+
+#pointer-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#pointer {
+    width: 20px;
+    height: 20px;
+    background-color: #4caf50;
+    border-radius: 50%;
+    margin-left: -10px;
+    z-index: 1;
+}
+
+#pointer-text {
+    position: relative;
+    margin-right: 5px;
+    font-weight: bold;
+    color: #000000;
+    z-index: 2;
+}
+
+#fileNameDisplay {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Additional styles for potential questions */
+.potential-questions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    margin-left: -55%;
+
+    /* Adjusted margin-left to move 25% to the left */
+}
+
+.potential-question {
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: white;
+
+}
+
+.potential-questions p{
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: white;
+    text-decoration: underline;
+
+}
+
+.chatcontainer{
+    width: 50%;
+    box-sizing: border-box;
+
+}
+
+.top-side{
+    max-height: 35%; /* Set the maximum width as desired */
+    padding: 20px; /* Add padding for better styling (optional) */
+    box-sizing: border-box; /* Include padding in the width */
+    text-align:left;
+}
+
+.top-side h1{
+    font-size:60px;
+    text-decoration: underline;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px; /* Increase padding for height */
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px; /* Adjust font size */
+    border: 2px solid black; 
+    border-radius: 4px; 
+    padding: 8px; 
+    box-sizing: border-box; 
+    width: 300px;
+}
+
+.chat-header{
+    padding-bottom: 20px;
+}
+
+.chat-container {
+    max-width: 600px; /* Adjust the maximum width as needed */
+    margin: 20px auto; /* Center the container */
+    padding: 10px;
+    /*border: 1px solid #ccc;
+    border-radius: 8px;*/
+    overflow-y: auto; /* Enable vertical scrollbar if needed */
+    max-height: 400px; /* Set a maximum height for the container */
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+  }
+
+.chat-header h2{
+    text-decoration: underline;
+}
+
+.summary p{
+    font-size: 20px;
+}
+
+.top-side p{
+    font-size: 20px;    
+}
+
+.contact {
+    color: #fff;
+    padding-right: 80%;
+    padding-bottom: 29%;
+    max-width: max-content;
+}
+
+.contact h2{
+    font-size: 50px;
+}
+
+.contact label{
+    font-size: 25px;
+}
+
+.contact label, input {
+    margin-bottom: 15%; /* Add margin between form elements */
+    width: 160%;
+    padding: 5px; /* Increase padding for height */
+}
+
+#feedback{
+    padding: 50px;
+    width: 130%;
+}
+
+#customBody{
+    overflow: hidden;
+}
