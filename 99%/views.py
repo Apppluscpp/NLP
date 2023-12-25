@@ -120,9 +120,7 @@ def extract_text_from_file_storage(file_storage):
     content_stream = BytesIO(content_bytes)
     return extract_text(content_stream)
 
-def save_to_text_file(text_content):
-    with open("converted_text.txt", "w", encoding="utf-8") as text_file:
-        text_file.write(text_content)
+
 
 def extract_text_from_file(uploaded_file):
     text_content = ""
