@@ -20,7 +20,6 @@ views = Blueprint("views", __name__)
 mail = Mail()
 
 @views.route("/upload_and_process", methods=["POST"])
-@views.route("/upload_and_process", methods=["POST"])
 def upload_and_process():
     if "file" not in request.files:
         return "No file part"
