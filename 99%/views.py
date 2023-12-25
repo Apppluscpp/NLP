@@ -114,14 +114,7 @@ def get_openai_response():
     )
 
     return jsonify({"response": response.choices[0].text.strip()})
-
-def extract_text_from_file_storage(file_storage):
-    content_bytes = file_storage.read()
-    content_stream = BytesIO(content_bytes)
-    return extract_text(content_stream)
-
-
-
+    
 def extract_text_from_file(uploaded_file):
     text_content = ""
 
