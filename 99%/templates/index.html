@@ -97,6 +97,16 @@
                     return false; // Prevent form submission
                 }
 
+                // Check if the file format is supported
+                const supportedFormats = [".pdf", ".docx", ".jpg", ".jpeg", ".png"];
+                const fileFormat = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2);
+
+                if (!supportedFormats.includes("." + fileFormat.toLowerCase())) {
+                    // Display an alert if the file format is not supported
+                    alert("Unsupported file format. Please upload a PDF, DOCX, JPG, JPEG, or PNG file.");
+                    return false; // Prevent form submission
+                }
+
                 // Continue with form submission if a file is selected
                 return true;
             }
