@@ -115,23 +115,6 @@ def get_openai_response():
 
     return jsonify({"response": response.choices[0].text.strip()})
 
-
-def extract_text_from_pdf(pdf_file):
-    text_content = ""
-
-    # Extract text using PyMuPDF
-    doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
-    for page_number in range(doc.page_count):
-        page = doc[page_number]
-        text_content += page.get_text()
-    doc.close()
-
-    # Extract text using pdfminer
-    pdf_file.seek(0)  # Reset file pointer
-    text_content += extract_text_from_file_storage(pdf_file)
-
-    return text_content
-
 def extract_text_from_file_storage(file_storage):
     content_bytes = file_storage.read()
     content_stream = BytesIO(content_bytes)
