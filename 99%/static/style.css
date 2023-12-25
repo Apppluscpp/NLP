@@ -101,7 +101,7 @@ button:hover {
     visibility: visible;
   }
 
-/* Styles for the fake progress bar */
+/* Styles for the progress bar */
 #progress-bar-container {
     width: 8%;
     height: 20px;
