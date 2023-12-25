@@ -53,7 +53,7 @@
                     const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
             
                     if (file.size > maxFileSizeBytes) {
-                        alert("File size exceeds the maximum limit of " + maxFileSizeMB + " MB.");
+                        alert("File size exceeds the maximum limit of " + maxFileSizeMB *1000 + " KB.");
                         // Reset the file input
                         fileInput.value = "";
                         fileNameDisplay.textContent = "";
