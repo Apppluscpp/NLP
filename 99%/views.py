@@ -95,25 +95,6 @@ def generate_summary(text_content, max_tokens=500):
 
 
 
-@views.route("/document_summary")
-def document_summary():
-    if "pdf_text" not in session:
-        return redirect(url_for("views.upload_and_process"))
-
-    # Get the text content from the session
-    text_content = session["pdf_text"]
-
-    # Call the OpenAI API for generating a summary
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=text_content,
-        max_tokens=150
-    )
-
-    # Extract the generated summary from the OpenAI response
-    summary = response.choices[0].text.strip()
-
-    return render_template("document_summary.html", summary=summary)
 
 @views.route("/get_openai_response", methods=["POST"])
 def get_openai_response():
